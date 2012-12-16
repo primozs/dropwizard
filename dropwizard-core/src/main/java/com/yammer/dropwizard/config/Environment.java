@@ -18,6 +18,7 @@ import com.yammer.dropwizard.tasks.GarbageCollectionTask;
 import com.yammer.dropwizard.tasks.Task;
 import com.yammer.dropwizard.validation.Validator;
 import com.yammer.metrics.core.HealthCheck;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -62,6 +63,7 @@ public class Environment extends AbstractLifeCycle {
     private final ImmutableMultimap.Builder<String, FilterHolder> filters;
     private final ImmutableSet.Builder<EventListener> servletListeners;
     private final ImmutableSet.Builder<Task> tasks;
+    private final ImmutableSet.Builder<Handler> handlers;
     private final ImmutableSet.Builder<String> protectedTargets;
     private final ImmutableList.Builder<ServerLifecycleListener> serverListeners;
     private Resource baseResource;
@@ -103,6 +105,7 @@ public class Environment extends AbstractLifeCycle {
         this.filters = ImmutableMultimap.builder();
         this.servletListeners = ImmutableSet.builder();
         this.tasks = ImmutableSet.builder();
+        this.handlers = ImmutableSet.builder();
         this.baseResource = Resource.newClassPathResource(".");
         this.protectedTargets = ImmutableSet.builder();
         this.serverListeners = ImmutableList.builder();
@@ -286,6 +289,10 @@ public class Environment extends AbstractLifeCycle {
         tasks.add(checkNotNull(task));
     }
 
+    public void addHandler(Handler handler) {
+        handlers.add(checkNotNull(handler));
+    }
+
     /**
      * Adds a protected Target (ie a target that 404s)
      *
@@ -424,6 +431,10 @@ public class Environment extends AbstractLifeCycle {
 
     ImmutableSet<Task> getTasks() {
         return tasks.build();
+    }
+
+    ImmutableSet<Handler> getHandlers() {
+        return  handlers.build();
     }
 
     ImmutableSet<String> getProtectedTargets() {

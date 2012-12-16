@@ -306,6 +306,10 @@ public class ServerFactory {
             collection.addHandler(requestLogHandlerFactory.build());
         }
 
+        for (Handler handler : env.getHandlers()) {
+            collection.addHandler(handler);
+        }
+
         return collection;
     }
 
